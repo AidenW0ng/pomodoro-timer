@@ -1,0 +1,3 @@
+/Users/orange/Desktop/Personal-Projects/Pomodoro-Project/CMakeFiles/window.dir
+/Users/orange/Desktop/Personal-Projects/Pomodoro-Project/CMakeFiles/edit_cache.dir
+/Users/orange/Desktop/Personal-Projects/Pomodoro-Project/CMakeFiles/rebuild_cache.dir
