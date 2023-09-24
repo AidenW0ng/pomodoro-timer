@@ -18,14 +18,19 @@ int main()
     font.loadFromFile("Arial.ttf");
     sf::Text text(std::to_string((int) two_des(time.asSeconds())), font);
     text.setPosition(500, 300);
+
+    sf::Text text_reset("Reset", font);
+    text_reset.setCharacterSize(15);
+    text_reset.setFillColor(sf::Color::Black);
+    text_reset.setPosition(205,200);
     sf::Vector2f button_pos = text.getPosition();
     text.setCharacterSize(30);
     text.setFillColor(sf::Color::Black);
     sf::RectangleShape button;
-    button.setSize(sf::Vector2f(50,50));
+    button.setSize(sf::Vector2f(50,20));
     button.setOutlineColor(sf::Color::Black);
     button.setOutlineThickness(1);
-    button.setPosition(button_pos.x, button_pos.y);
+    button.setPosition(200,200);
     button.setFillColor(sf::Color::Transparent);
     while (window.isOpen()) {
         sf::Event event;
@@ -53,6 +58,7 @@ int main()
         // Clear the window with the current background color
         window.clear(bgColor);
         window.draw(text);
+        window.draw(text_reset);
         window.draw(button);
         // Display the contents of the window
         window.display();
