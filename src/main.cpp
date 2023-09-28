@@ -1,23 +1,26 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
-
 int main()
 {
     bool clock_running = false;
 
-
     sf::RenderWindow window(sf::VideoMode(800, 800), "Timer");
     sf::Clock clock;
-    sf::Time time = sf::seconds(60.0);
+    sf::Time time = sf::seconds(300.0);
     // Set the initial background color to white
     sf::Color bgColor = sf::Color::White;
     sf::Font font;
     font.loadFromFile("Arial.ttf");
-    sf::Text text(std::to_string((int) (time.asSeconds())), font);
-    text.setPosition(300, 300);
-    text.setFillColor(sf::Color::Black);
-    text.setCharacterSize(15);
+    sf::Text minutes(std::to_string((int) time.asSeconds() / 60), font);
+    sf::Text seconds(std::to_string((int) ((int) time.asSeconds() % 60 * 60)), font);
+
+    seconds.setPosition(320, 300);
+    seconds.setFillColor(sf::Color::Black);
+    seconds.setCharacterSize(15);
+    minutes.setPosition(300, 300);
+    minutes.setFillColor(sf::Color::Black);
+    minutes.setCharacterSize(15);
 
     sf::Text text_reset("Reset", font);
     text_reset.setCharacterSize(15);
@@ -29,9 +32,6 @@ int main()
     text_stop.setFillColor(sf::Color::Black);
     text_stop.setPosition(505, 500);
 
-    sf::Vector2f button_pos = text.getPosition();
-
-
     sf::RectangleShape stop_button;
     stop_button.setSize(sf::Vector2f(50,20));
     stop_button.setOutlineColor(sf::Color::Black);
@@ -39,6 +39,7 @@ int main()
     stop_button.setPosition(500,500);
 
     sf::RectangleShape button;
+
     button.setSize(sf::Vector2f(50,20));
     button.setOutlineColor(sf::Color::Black);
     button.setOutlineThickness(1);
@@ -62,7 +63,7 @@ int main()
             else if(event.type == sf::Event::MouseButtonPressed)
             {
                 if(buttonBounds.contains(static_cast<sf::Vector2f>(mouse_pos)))
-                    time = sf::seconds(0.0f);
+                    time = sf::seconds(300.0f);
                 if(stopBounds.contains(static_cast<sf::Vector2f>(mouse_pos)))
                 {
                     clock_running = !clock_running;
@@ -79,7 +80,12 @@ int main()
             clock.restart();
         } else
             clock.restart();
-        text.setString(std::to_string((int) (time.asSeconds())));
+        minutes.setString (std::to_string((int) time.asSeconds() / 60));
+        seconds.setString(std::to_string((int) time.asSeconds() % 60));
+        if(minutes.getString().getSize() < 2)
+            minutes.setString("0" + minutes.getString());
+        if(seconds.getString().getSize() < 2)
+            seconds.setString("0" + seconds.getString());
         if(buttonBounds.contains(static_cast<sf::Vector2f>(mouse_pos)))
             button.setFillColor(sf::Color::Green);
         else
@@ -90,7 +96,8 @@ int main()
         window.draw(text_reset);
         window.draw(stop_button);
         window.draw(text_stop);
-        window.draw(text);
+        window.draw(minutes);
+        window.draw(seconds);
         window.display();
     }
 
