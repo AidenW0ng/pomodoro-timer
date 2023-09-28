@@ -1,5 +1,8 @@
-build/
+CMakeCache.txt
 CMakeLists.txt
 .cache/
 compile_commands.json
 .DS_Store
+cmake_install.cmake
+Makefile
+CmakeFiles/
