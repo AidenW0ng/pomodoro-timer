@@ -115,12 +115,18 @@ int main()
                     sf::FloatRect bound = overhead_buttons[i].getGlobalBounds();
                     if(bound.contains(click_spot))
                     {
-                       if(i == 0)
+                        if(i == 0) {
                            time = sf::seconds(study_time);
-                       else if(i == 1)
-                           time = sf::seconds(short_break);
-                       else
+                           user_state = 0;
+                        }
+                        else if(i == 1) {
+                            time = sf::seconds(short_break);
+                            user_state = 1;
+                        }
+                        else {
                            time = sf::seconds(long_break);
+                           user_state = 2;
+                        }
                        clock_running = false;
                     }
                 }
@@ -144,6 +150,11 @@ int main()
             if(time.asSeconds() < 0)
             {
                 clock_running = false;
+                if(user_state == 0)
+                    user_state = 1;
+                else
+                    user_state = 0;
+                time = sf::seconds(timer_state[user_state]);
             } else
                 time -= clock.getElapsedTime();
             clock.restart();
