@@ -11,6 +11,7 @@ int main()
     std::vector<float> timer_state = {study_time, short_break, long_break};
     int user_state = 0;
 
+
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
     bool clock_running = false;
@@ -59,28 +60,31 @@ int main()
     text_stop.setOrigin(stop_text_bound.left + stop_text_bound.width / 2.0f,
                         stop_text_bound.top + stop_text_bound.height / 2.0f);
 
-
+    sf::CircleShape point;
+    point.setRadius(1);
+    point.setFillColor(sf::Color::Red);
 
     sf::View view(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
     window.setView(view);
     for(int i = -1; i <= 1; i++)
     {
-        overhead_buttons[i+1].setSize(sf::Vector2f(50,20));
+        overhead_buttons[i+1].setSize(sf::Vector2f(70,20));
+        overhead_button_text[i+1].setCharacterSize(15);
         sf::FloatRect overhead_text_bound = overhead_button_text[i+1].getLocalBounds();
+        sf::FloatRect ycoordadjust = text_short_break.getLocalBounds();
         sf::FloatRect overhead_button_bound = overhead_buttons[i+1].getLocalBounds();
         overhead_buttons[i+1].setOutlineColor(sf::Color::Black);
         overhead_buttons[i+1].setOutlineThickness(1);
         overhead_buttons[i+1].setFillColor(sf::Color::Transparent);
         overhead_buttons[i+1].setOrigin(overhead_button_bound.left + overhead_button_bound.width / 2.0,
-                                      overhead_button_bound.top + overhead_button_bound.height / 2.0);
-        overhead_buttons[i+1].setPosition(time_display.getPosition().x + (i * time_text_bound.width / 2.0),
-                                          time_display.getPosition().y - 50);
-        overhead_button_text[i+1].setCharacterSize(15);
+                                      overhead_button_bound.top + overhead_button_bound.height);
+        overhead_buttons[i+1].setPosition(time_display.getPosition().x + (i * (time_text_bound.width / 2.0 - 50)),
+                                          time_display.getPosition().y - 60);
         overhead_button_text[i+1].setFillColor(sf::Color::Black);
-        overhead_button_text[i+1].setOrigin(overhead_text_bound.left + overhead_text_bound.width / 2.0f,
-                                          overhead_text_bound.top + overhead_text_bound.height / 2.0f);
-        overhead_button_text[i+1].setPosition(overhead_buttons[i+1].getPosition().x + overhead_button_bound.width / 2.0,
-                                            overhead_buttons[i+1].getPosition().y + overhead_button_bound.height / 2.0);
+        overhead_button_text[i+1].setOrigin(overhead_text_bound.left + overhead_text_bound.width / 2.0,
+                                          ycoordadjust.top + ycoordadjust.height / 2.0);
+        overhead_button_text[i+1].setPosition(overhead_buttons[i+1].getPosition().x,
+                                            overhead_buttons[i+1].getPosition().y);
     }
 
     while (window.isOpen()) {
@@ -100,13 +104,25 @@ int main()
 
             else if(event.type == sf::Event::MouseButtonPressed)
             {
-                if(stopBounds.contains(static_cast<sf::Vector2f>(mouse_pos)))
+                sf::Vector2f click_spot = static_cast<sf::Vector2f>(mouse_pos);
+                if(stopBounds.contains(click_spot))
                 {
                     clock_running = !clock_running;
-                    if(clock_running)
-                        text_stop.setString("Pause");
-                    else
-                        text_stop.setString("Start");
+                }
+
+                for(int i = 0; i < 3; i++)
+                {
+                    sf::FloatRect bound = overhead_buttons[i].getGlobalBounds();
+                    if(bound.contains(click_spot))
+                    {
+                       if(i == 0)
+                           time = sf::seconds(study_time);
+                       else if(i == 1)
+                           time = sf::seconds(short_break);
+                       else
+                           time = sf::seconds(long_break);
+                       clock_running = false;
+                    }
                 }
             }
 
@@ -124,16 +140,21 @@ int main()
 
         if(clock_running)
         {
+            text_stop.setString("Pause");
             if(time.asSeconds() < 0)
             {
                 clock_running = false;
-                text_stop.setString("Start");
             } else
                 time -= clock.getElapsedTime();
             clock.restart();
 
-        } else
+        }
+
+        else
+        {
             clock.restart();
+            text_stop.setString("Start");
+        }
         minutes = (std::to_string((int) time.asSeconds() / 60));
         seconds = (std::to_string((int) time.asSeconds() % 60));
         if(minutes.length() < 2)
@@ -141,22 +162,20 @@ int main()
         if(seconds.length() < 2)
             seconds = ("0" + seconds);
         time_display.setString(minutes + " : " + seconds);
-
-        // if(buttonBounds.contains(static_cast<sf::Vector2f>(mouse_pos)))
-        //     over_headbutton.setFillColor(sf::Color::Green);
-        // else
-        //    button.setFillColor(sf::Color::Transparent);
-
         window.clear(bgColor);
         window.draw(stop_button);
         window.draw(text_stop);
         window.draw(time_display);
         for(int i = 0; i < 3; i++)
         {
-            window.draw(overhead_button_text[i]);
+            sf::FloatRect bound = overhead_buttons[i].getGlobalBounds();
+            if(bound.contains(static_cast<sf::Vector2f>(mouse_pos)))
+                overhead_buttons[i].setFillColor(sf::Color::Red);
+            else
+                overhead_buttons[i].setFillColor(sf::Color::Transparent);
             window.draw(overhead_buttons[i]);
+            window.draw(overhead_button_text[i]);
         }
-
         window.display();
     }
 
