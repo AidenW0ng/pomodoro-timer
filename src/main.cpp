@@ -68,18 +68,19 @@ int main()
     window.setView(view);
     for(int i = -1; i <= 1; i++)
     {
-        overhead_buttons[i+1].setSize(sf::Vector2f(70,20));
-        overhead_button_text[i+1].setCharacterSize(15);
+        overhead_buttons[i+1].setSize(sf::Vector2f(95,25));
+        overhead_button_text[i+1].setCharacterSize(20);
         sf::FloatRect overhead_text_bound = overhead_button_text[i+1].getLocalBounds();
+        text_short_break.setCharacterSize(20);
         sf::FloatRect ycoordadjust = text_short_break.getLocalBounds();
         sf::FloatRect overhead_button_bound = overhead_buttons[i+1].getLocalBounds();
         overhead_buttons[i+1].setOutlineColor(sf::Color::Black);
         overhead_buttons[i+1].setOutlineThickness(1);
         overhead_buttons[i+1].setFillColor(sf::Color::Transparent);
         overhead_buttons[i+1].setOrigin(overhead_button_bound.left + overhead_button_bound.width / 2.0,
-                                      overhead_button_bound.top + overhead_button_bound.height);
-        overhead_buttons[i+1].setPosition(time_display.getPosition().x + (i * (time_text_bound.width / 2.0 - 50)),
-                                          time_display.getPosition().y - 60);
+                                      overhead_button_bound.top + overhead_button_bound.height / 2.0);
+        overhead_buttons[i+1].setPosition(time_display.getPosition().x + (i * (time_text_bound.width / 2.0 - 30)),
+                                          time_display.getPosition().y - 80);
         overhead_button_text[i+1].setFillColor(sf::Color::Black);
         overhead_button_text[i+1].setOrigin(overhead_text_bound.left + overhead_text_bound.width / 2.0,
                                           ycoordadjust.top + ycoordadjust.height / 2.0);
